@@ -1,22 +1,23 @@
+DROP DATABASE IF EXISTS GrupoC;
+CREATE DATABASE GrupoC;
+USE GrupoC;
 --
 -- Script creado una vez se hizo el modelo relacional del proyecto
 --
 
-DROP DATABASE IF EXISTS GrupoC;
-CREATE DATABASE GrupoC;
-USE GrupoC;
+-- Una vez ejecutado la primera vez comentar lo de drop database y create database
 
 -- Creación de tablas fuertes (sin dependencias)
-DROP TABLE IF EXISTS Vendida CASCADE;
-DROP TABLE IF EXISTS Oferta CASCADE;
-DROP TABLE IF EXISTS Entrada CASCADE;
-DROP TABLE IF EXISTS Aforo CASCADE;
-DROP TABLE IF EXISTS Grada CASCADE;
-DROP TABLE IF EXISTS Evento CASCADE;
-DROP TABLE IF EXISTS Espectaculo CASCADE;
-DROP TABLE IF EXISTS Usuario CASCADE;
-DROP TABLE IF EXISTS Cliente CASCADE;
-DROP TABLE IF EXISTS Aforo CASCADE;
+DROP TABLE IF EXISTS Vendida;
+DROP TABLE IF EXISTS Oferta;
+DROP TABLE IF EXISTS Entrada;
+DROP TABLE IF EXISTS Aforo;
+DROP TABLE IF EXISTS Grada;
+DROP TABLE IF EXISTS Evento;
+DROP TABLE IF EXISTS Espectaculo;
+DROP TABLE IF EXISTS Usuario;
+DROP TABLE IF EXISTS Cliente;
+DROP TABLE IF EXISTS Esta;
 
 CREATE TABLE Espectaculo ( -- OK
     Nombre_espectaculo VARCHAR(50) PRIMARY KEY,
@@ -100,7 +101,8 @@ CREATE TABLE Vendida (
     FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo),
     FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo),
     FOREIGN KEY (DNI) REFERENCES Cliente(DNI),
-    FOREIGN KEY (Fecha, Recinto, Nombre_grada, Localidad) REFERENCES Entrada(Fecha, Recinto, Nombre_grada, Localidad)
+    FOREIGN KEY (Fecha, Recinto, Nombre_grada, Localidad) REFERENCES Entrada(Fecha, Recinto, Nombre_grada, Localidad),
+    UNIQUE (Fecha, Recinto, Nombre_grada, Localidad)
 );
  
 
