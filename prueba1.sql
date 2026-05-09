@@ -53,7 +53,7 @@ CREATE TABLE Oferta (
     Recinto VARCHAR(100) NOT NULL,
     Fecha TIMESTAMP NOT NULL, 
     Nombre_grada VARCHAR(100) NOT NULL,
-    Tipo  VARCHAR(50) PRIMARY KEY,
+    Tipo  VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (Recinto, Fecha, Nombre_Grada, Tipo),
     FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
