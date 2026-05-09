@@ -1,6 +1,6 @@
----
+--
 -- Script creado una vez se hizo el modelo relacional del proyecto
----
+--
 
 DROP DATABASE IF EXISTS GrupoC;
 CREATE DATABASE GrupoC;
