@@ -48,8 +48,7 @@ CREATE TABLE Oferta (
     Recinto VARCHAR(100) NOT NULL,
     Precio INTEGER NOT NULL,
 
-    PRIMARY KEY (Nombre_espectaculo, Recinto),
-    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo),
+    PRIMARY KEY ( Recinto),
     FOREIGN KEY (Recinto) REFERENCES Recinto(Nombre_Recinto),
     CHECK (Precio > 0)
 );
