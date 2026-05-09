@@ -49,11 +49,17 @@ CREATE TABLE Aforo (-- OK
 );
 
 CREATE TABLE Oferta (
-    Recinto VARCHAR(100) NOT NULL,
     Precio INTEGER NOT NULL,
+    Recinto VARCHAR(100) NOT NULL,
+    Fecha TIMESTAMP NOT NULL, 
+    Nombre_grada VARCHAR(100) NOT NULL,
+    Tipo  VARCHAR(50) PRIMARY KEY,
 
-    PRIMARY KEY ( Recinto),
+    PRIMARY KEY (Recinto, Fecha, Nombre_Grada, Tipo),
+    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
+    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada),
     FOREIGN KEY (Recinto) REFERENCES Recinto(Nombre_Recinto),
+    FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo),
     CHECK (Precio > 0)
 );
 
