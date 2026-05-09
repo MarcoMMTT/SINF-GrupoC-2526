@@ -2,6 +2,10 @@
 -- Script creado una vez se hizo el modelo relacional del proyecto
 ---
 
+DROP DATABASE IF EXISTS GrupoC;
+CREATE DATABASE GrupoC;
+USE GrupoC;
+
 -- Creación de tablas fuertes (sin dependencias)
 DROP TABLE IF EXISTS Vendida CASCADE;
 DROP TABLE IF EXISTS Oferta CASCADE;
