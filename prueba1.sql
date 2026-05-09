@@ -1,3 +1,7 @@
+---
+-- Script creado una vez se hizo el modelo relacional del proyecto
+---
+
 -- Creación de tablas fuertes (sin dependencias)
 DROP TABLE IF EXISTS Vendida CASCADE;
 DROP TABLE IF EXISTS Oferta CASCADE;
@@ -41,7 +45,6 @@ CREATE TABLE Aforo (-- OK
 );
 
 CREATE TABLE Oferta (
-    Nombre_espectaculo VARCHAR(50) NOT NULL,
     Recinto VARCHAR(100) NOT NULL,
     Precio INTEGER NOT NULL,
 
@@ -90,7 +93,7 @@ CREATE TABLE Vendida (
     FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo),
     FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo),
     FOREIGN KEY (DNI) REFERENCES Cliente(DNI),
-    FOREIGN KEY (Localidad) REFERENCES Entrada(Localidad)
+    FOREIGN KEY (Fecha, Recinto, Nombre_grada, Localidad) REFERENCES Entrada(Fecha, Recinto, Nombre_grada, Localidad)
 );
  
 
@@ -99,6 +102,7 @@ CREATE TABLE Esta (
     Recinto VARCHAR(50) NOT NULL,
     Nombre_grada VARCHAR(100) NOT NULL,
 
+    PRIMARY KEY (Nombre_grada,Recinto, Fecha),
     FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
     FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
 );
