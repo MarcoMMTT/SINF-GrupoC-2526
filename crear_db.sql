@@ -32,30 +32,29 @@ CREATE TABLE evento (
     CHECK (estado IN ('abierto', 'cerrado', 'finalizado'))
 );
 
+CREATE TABLE aforo (
+    huecos INTEGER PRIMARY KEY,
+    CHECK (huecos >= 0)
+);
+
 CREATE TABLE grada (
     nombre_espectaculo VARCHAR(120) NOT NULL,
     fecha TIMESTAMP NOT NULL,
     recinto VARCHAR(120) NOT NULL,
     nombre VARCHAR(80) NOT NULL,
+    huecos INTEGER NOT NULL,
+
     PRIMARY KEY (nombre_espectaculo, fecha, recinto, nombre),
+
     FOREIGN KEY (nombre_espectaculo, fecha, recinto)
         REFERENCES evento(nombre_espectaculo, fecha, recinto)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
-);
-
-CREATE TABLE aforo (
-    nombre_espectaculo VARCHAR(120) NOT NULL,
-    fecha TIMESTAMP NOT NULL,
-    recinto VARCHAR(120) NOT NULL,
-    nombre_grada VARCHAR(80) NOT NULL,
-    huecos INTEGER NOT NULL,
-    PRIMARY KEY (nombre_espectaculo, fecha, recinto, nombre_grada, huecos),
-    FOREIGN KEY (nombre_espectaculo, fecha, recinto, nombre_grada)
-        REFERENCES grada(nombre_espectaculo, fecha, recinto, nombre)
-        ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CHECK (huecos >= 0)
+
+    FOREIGN KEY (huecos)
+        REFERENCES aforo(huecos)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE entrada (
