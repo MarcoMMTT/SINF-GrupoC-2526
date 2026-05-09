@@ -16,7 +16,6 @@ DROP TABLE IF EXISTS Evento CASCADE;
 DROP TABLE IF EXISTS Espectaculo CASCADE;
 DROP TABLE IF EXISTS Usuario CASCADE;
 DROP TABLE IF EXISTS Cliente CASCADE;
-DROP TABLE IF EXISTS Recinto CASCADE;
 DROP TABLE IF EXISTS Aforo CASCADE;
 
 CREATE TABLE Espectaculo ( -- OK
@@ -48,6 +47,17 @@ CREATE TABLE Aforo (-- OK
     CHECK (Huecos > 0)
 );
 
+CREATE TABLE Evento ( -- OK
+    Nombre_espectaculo VARCHAR(50) NOT NULL,
+    Recinto VARCHAR(50) NOT NULL,
+    Fecha TIMESTAMP NOT NULL, 
+    Estado VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (Recinto, Fecha),
+    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo),
+    CHECK (Estado IN ('finalizado', 'abierto', 'cerrado'))
+);
+
 CREATE TABLE Oferta (
     Precio INTEGER NOT NULL,
     Recinto VARCHAR(100) NOT NULL,
@@ -58,20 +68,8 @@ CREATE TABLE Oferta (
     PRIMARY KEY (Recinto, Fecha, Nombre_Grada, Tipo),
     FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
     FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada),
-    FOREIGN KEY (Recinto) REFERENCES Recinto(Nombre_Recinto),
     FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo),
     CHECK (Precio > 0)
-);
-
-CREATE TABLE Evento ( -- OK
-    Nombre_espectaculo VARCHAR(50) NOT NULL,
-    Recinto VARCHAR(50) NOT NULL,
-    Fecha TIMESTAMP NOT NULL, 
-    Estado VARCHAR(20) NOT NULL,
-
-    PRIMARY KEY (Recinto, Fecha),
-    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo),
-    CHECK (Estado IN ('finalizado', 'abierto', 'cerrado'))
 );
 
 CREATE TABLE Entrada ( -- OK
