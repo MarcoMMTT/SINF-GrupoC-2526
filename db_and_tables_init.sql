@@ -120,3 +120,9 @@ CREATE TABLE Vendida (
     UNIQUE (Fecha, Recinto, Nombre_grada, Localidad)
 );
  
+
+CREATE INDEX idx_entrada_estado_pk
+ON Entrada(Estado, Fecha, Recinto, Nombre_grada, Localidad);
+
+CREATE INDEX idx_vendida_entrada
+ON Vendida(Fecha, Recinto, Nombre_grada, Localidad);

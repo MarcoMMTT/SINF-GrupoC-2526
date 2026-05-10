@@ -1,14 +1,24 @@
 USE GrupoC;
 
-INSERT IGNORE INTO Evento(Nombre_espectaculo, Recinto, Fecha, Estado)
+INSERT IGNORE INTO Evento(
+    Nombre_espectaculo,
+    Recinto,
+    Fecha,
+    Estado
+)
 SELECT
     e.Nombre_espectaculo,
     r.nombre AS Recinto,
 
-    CASE
-        WHEN e.Tipo = 'deportivo' THEN
-            TIMESTAMP(
-                DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
+    TIMESTAMP(
+        DATE_ADD(
+            '2026-01-01',
+            INTERVAL FLOOR(n.n / 20) DAY
+        ),
+
+        CASE
+            -- Eventos deportivos
+            WHEN e.Tipo = 'deportivo' THEN
                 MAKETIME(
                     CASE
                         WHEN n.n % 3 = 0 THEN 17
@@ -18,11 +28,9 @@ SELECT
                     0,
                     0
                 )
-            )
 
-        WHEN e.Tipo = 'musical' THEN
-            TIMESTAMP(
-                DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
+            -- Conciertos
+            WHEN e.Tipo = 'musical' THEN
                 MAKETIME(
                     CASE
                         WHEN n.n % 3 = 0 THEN 20
@@ -32,11 +40,9 @@ SELECT
                     0,
                     0
                 )
-            )
 
-        WHEN e.Tipo = 'teatral' THEN
-            TIMESTAMP(
-                DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
+            -- Teatro
+            WHEN e.Tipo = 'teatral' THEN
                 MAKETIME(
                     CASE
                         WHEN n.n % 2 = 0 THEN 18
@@ -45,11 +51,9 @@ SELECT
                     30,
                     0
                 )
-            )
 
-        WHEN e.Tipo = 'cultural' THEN
-            TIMESTAMP(
-                DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
+            -- Cultura
+            WHEN e.Tipo = 'cultural' THEN
                 MAKETIME(
                     CASE
                         WHEN n.n % 3 = 0 THEN 11
@@ -59,11 +63,9 @@ SELECT
                     0,
                     0
                 )
-            )
 
-        WHEN e.Tipo = 'cine' THEN
-            TIMESTAMP(
-                DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
+            -- Cine
+            WHEN e.Tipo = 'cine' THEN
                 MAKETIME(
                     CASE
                         WHEN n.n % 4 = 0 THEN 16
@@ -74,11 +76,9 @@ SELECT
                     0,
                     0
                 )
-            )
 
-        ELSE
-            TIMESTAMP(
-                DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
+            -- Otros
+            ELSE
                 MAKETIME(
                     CASE
                         WHEN n.n % 2 = 0 THEN 10
@@ -87,8 +87,8 @@ SELECT
                     0,
                     0
                 )
-            )
-    END AS Fecha,
+        END
+    ) AS Fecha,
 
     CASE
         WHEN n.n % 30 = 0 THEN 'cerrado'
@@ -96,25 +96,70 @@ SELECT
     END AS Estado
 
 FROM numeros n
-JOIN Espectaculo e
-  ON e.Nombre_espectaculo = (
-      SELECT e2.Nombre_espectaculo
-      FROM Espectaculo e2
-      ORDER BY RAND()
-      LIMIT 1
-  )
-JOIN recintos_demo r
-  ON r.id = (
-    SELECT r2.id
-    FROM recintos_demo r2
-    WHERE
-           (e.Tipo = 'deportivo' AND r2.tipo_recinto IN ('estadio', 'pabellon'))
-        OR (e.Tipo = 'musical'   AND r2.tipo_recinto IN ('estadio', 'pabellon', 'auditorio', 'feria'))
-        OR (e.Tipo = 'teatral'   AND r2.tipo_recinto = 'teatro')
-        OR (e.Tipo = 'cultural'  AND r2.tipo_recinto IN ('teatro', 'auditorio', 'feria'))
-        OR (e.Tipo = 'cine'      AND r2.tipo_recinto = 'cine')
-        OR (e.Tipo = 'otro'      AND r2.tipo_recinto IN ('feria', 'auditorio', 'pabellon'))
-    ORDER BY RAND()
-    LIMIT 1
-  )
-WHERE n.n <= 2000;
+
+JOIN (
+    SELECT
+        Nombre_espectaculo,
+        Tipo,
+        ROW_NUMBER() OVER (
+            ORDER BY Nombre_espectaculo
+        ) AS rn,
+        COUNT(*) OVER () AS total
+    FROM Espectaculo
+) e
+    ON e.rn = ((n.n - 1) % e.total) + 1
+
+JOIN (
+    SELECT
+        id,
+        nombre,
+        tipo_recinto,
+
+        ROW_NUMBER() OVER (
+            PARTITION BY tipo_recinto
+            ORDER BY id
+        ) AS rn_tipo,
+
+        COUNT(*) OVER (
+            PARTITION BY tipo_recinto
+        ) AS total_tipo
+
+    FROM recintos_demo
+) r
+ON (
+       (e.Tipo = 'deportivo'
+            AND r.tipo_recinto IN ('estadio', 'pabellon'))
+
+    OR (e.Tipo = 'musical'
+            AND r.tipo_recinto IN (
+                'estadio',
+                'pabellon',
+                'auditorio',
+                'feria'
+            ))
+
+    OR (e.Tipo = 'teatral'
+            AND r.tipo_recinto = 'teatro')
+
+    OR (e.Tipo = 'cultural'
+            AND r.tipo_recinto IN (
+                'teatro',
+                'auditorio',
+                'feria'
+            ))
+
+    OR (e.Tipo = 'cine'
+            AND r.tipo_recinto = 'cine')
+
+    OR (e.Tipo = 'otro'
+            AND r.tipo_recinto IN (
+                'feria',
+                'auditorio',
+                'pabellon'
+            ))
+)
+
+WHERE n.n <= 2000
+
+AND r.rn_tipo =
+    ((n.n - 1) % r.total_tipo) + 1;
