@@ -41,7 +41,7 @@ CREATE TABLE Evento ( -- OK
     Fecha TIMESTAMP NOT NULL, 
     Estado VARCHAR(20) NOT NULL,
 
-    PRIMARY KEY (Recinto, Fecha),
+    PRIMARY KEY (Fecha, Recinto),
     FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
@@ -66,7 +66,7 @@ CREATE TABLE Oferta (
     Tipo  VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (Recinto, Fecha, Nombre_Grada, Tipo),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
+    FOREIGN KEY (Fecha, Recinto) REFERENCES Evento(Fecha, Recinto)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
     FOREIGN KEY (Nombre_grada, Fecha, Recinto) REFERENCES Grada(Nombre_Grada, Fecha, Recinto)
@@ -86,10 +86,10 @@ CREATE TABLE Entrada (
     Estado VARCHAR(50),
     
     PRIMARY KEY (Fecha, Recinto, Nombre_grada, Localidad),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
+    FOREIGN KEY (Fecha, Recinto) REFERENCES Evento(Fecha, Recinto)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
-    FOREIGN KEY (Nombre_grada, Recinto, Fecha) REFERENCES Grada(Nombre_Grada, Recinto, Fecha)
+    FOREIGN KEY (Nombre_grada, Fecha, Recinto) REFERENCES Grada(Nombre_Grada, Fecha, Recinto)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
     CHECK (Estado IN ('libre', 'reservado', 'deteriorado')) -- deteriorado: ya pasó el evento.
@@ -104,7 +104,7 @@ CREATE TABLE Vendida (
     Localidad VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Nombre_Grada, Tipo, Fecha, Recinto, DNI, Localidad),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
+    FOREIGN KEY (Fecha, Recinto) REFERENCES Evento(Fecha, Recinto)
         ON UPDATE CASCADE,
     FOREIGN KEY (Nombre_grada, Fecha, Recinto) REFERENCES Grada(Nombre_Grada, Fecha, Recinto)
         ON UPDATE CASCADE,
