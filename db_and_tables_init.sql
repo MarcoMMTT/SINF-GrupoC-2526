@@ -92,7 +92,7 @@ CREATE TABLE Entrada (
     FOREIGN KEY (Nombre_grada, Fecha, Recinto) REFERENCES Grada(Nombre_Grada, Fecha, Recinto)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
-    CHECK (Estado IN ('libre', 'deteriorado')) -- deteriorado: ya pasó el evento.
+    CHECK (Estado IN ('libre', 'reservado', 'deteriorado')) -- deteriorado: ya pasó el evento.
 );
 
 CREATE TABLE Vendida (
