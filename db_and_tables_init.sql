@@ -104,7 +104,7 @@ CREATE TABLE Vendida (
     Nombre_grada VARCHAR(100) NOT NULL,
     Tipo VARCHAR(50) NOT NULL,
     Fecha TIMESTAMP NOT NULL,
-    Recinto VARCHAR(50) NOT NULL,
+    Recinto VARCHAR(100) NOT NULL,
     Nombre_espectaculo VARCHAR(50) NOT NULL,
     DNI VARCHAR(20) NOT NULL,
     Localidad VARCHAR(100) NOT NULL,
@@ -131,7 +131,7 @@ CREATE TABLE Vendida (
 
 CREATE TABLE Esta (
     Fecha TIMESTAMP NOT NULL,
-    Recinto VARCHAR(50) NOT NULL,
+    Recinto VARCHAR(100) NOT NULL,
     Nombre_grada VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Nombre_grada,Recinto, Fecha),
