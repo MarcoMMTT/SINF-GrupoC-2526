@@ -67,3 +67,11 @@ INSERT INTO recintos_demo(nombre, tipo_recinto) VALUES
 ('Palacio de Ferias de Málaga', 'feria'),
 ('ExpoCoruña', 'feria'),
 ('Cidade da Cultura', 'feria');
+
+-- Cines de Vigo
+('Cine Yelmo Premium Vialia', 'cine'),
+('Cine Yelmo Travesía', 'cine'),
+('Gran Vía Cines', 'cine'),
+('Multicines Norte', 'cine'),
+('Cines Tamberlick', 'cine'),
+('Teatro Cine Salesianos', 'cine');
