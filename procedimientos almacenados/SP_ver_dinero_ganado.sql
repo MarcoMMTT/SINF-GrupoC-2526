@@ -1,3 +1,4 @@
+USE GrupoC;
 DELIMITER //
 
 CREATE PROCEDURE VerDineroGanado()
