@@ -1,0 +1,1 @@
+-- Este script lo hice para probar desde fuera el procedimiento almacenado.

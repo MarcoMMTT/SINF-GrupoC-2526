@@ -15,6 +15,3 @@ BEGIN
 END //
 
 DELIMITER ;
-
--- ¿Cómo probarlo?
--- CALL SP_Registrar_Cliente('12345678A', 'ES1234567890123456789012');
