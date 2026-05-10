@@ -51,6 +51,20 @@ SELECT
                 WHEN 4 THEN 'Sala Conferencias'
                 WHEN 5 THEN 'Zona VIP'
             END
+
+        WHEN r.tipo_recinto = 'cine' THEN
+            CASE g.n
+                WHEN 1 THEN 'Fila A'
+                WHEN 2 THEN 'Fila B'
+                WHEN 3 THEN 'Fila C'
+                WHEN 4 THEN 'Fila D'
+                WHEN 5 THEN 'Fila E'
+                WHEN 6 THEN 'Fila F'
+                WHEN 7 THEN 'Fila G'
+                WHEN 8 THEN 'Fila H'
+                WHEN 9 THEN 'Fila I'
+                WHEN 10 THEN 'Fila J'
+            END
     END AS Nombre_Grada,
     e.Fecha,
     e.Recinto
@@ -63,4 +77,5 @@ WHERE
     OR (r.tipo_recinto = 'pabellon'  AND g.n <= 6)
     OR (r.tipo_recinto = 'teatro'    AND g.n <= 5)
     OR (r.tipo_recinto = 'auditorio' AND g.n <= 5)
-    OR (r.tipo_recinto = 'feria'     AND g.n <= 5);
+    OR (r.tipo_recinto = 'feria'     AND g.n <= 5)
+    OR (r.tipo_recinto = 'cine'      AND g.n <= 10);

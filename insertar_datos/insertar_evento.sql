@@ -6,7 +6,6 @@ SELECT
     r.nombre AS Recinto,
 
     CASE
-        -- Fútbol / deporte: tarde-noche, no madrugada
         WHEN e.Tipo = 'deportivo' THEN
             TIMESTAMP(
                 DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
@@ -21,7 +20,6 @@ SELECT
                 )
             )
 
-        -- Conciertos: normalmente noche
         WHEN e.Tipo = 'musical' THEN
             TIMESTAMP(
                 DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
@@ -36,7 +34,6 @@ SELECT
                 )
             )
 
-        -- Teatro: tarde o noche temprana
         WHEN e.Tipo = 'teatral' THEN
             TIMESTAMP(
                 DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
@@ -50,7 +47,6 @@ SELECT
                 )
             )
 
-        -- Cultural: mañana o tarde
         WHEN e.Tipo = 'cultural' THEN
             TIMESTAMP(
                 DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
@@ -65,7 +61,21 @@ SELECT
                 )
             )
 
-        -- Otros: congresos, ferias, galas...
+        WHEN e.Tipo = 'cine' THEN
+            TIMESTAMP(
+                DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
+                MAKETIME(
+                    CASE
+                        WHEN n.n % 4 = 0 THEN 16
+                        WHEN n.n % 4 = 1 THEN 18
+                        WHEN n.n % 4 = 2 THEN 20
+                        ELSE 22
+                    END,
+                    0,
+                    0
+                )
+            )
+
         ELSE
             TIMESTAMP(
                 DATE_ADD('2026-01-01', INTERVAL FLOOR(n.n / 20) DAY),
@@ -94,36 +104,17 @@ JOIN Espectaculo e
       LIMIT 1
   )
 JOIN recintos_demo r
-  ON (
-        -- Deportes en estadios o pabellones
-        (e.Tipo = 'deportivo' AND r.tipo_recinto IN ('estadio', 'pabellon'))
-
-        -- Música en estadios, pabellones, auditorios o ferias
-     OR (e.Tipo = 'musical' AND r.tipo_recinto IN ('estadio', 'pabellon', 'auditorio', 'feria'))
-
-        -- Teatro solo en teatros
-     OR (e.Tipo = 'teatral' AND r.tipo_recinto = 'teatro')
-
-        -- Cultural en teatro, auditorio o feria
-     OR (e.Tipo = 'cultural' AND r.tipo_recinto IN ('teatro', 'auditorio', 'feria'))
-
-        -- Otros en feria, auditorio o pabellón
-     OR (e.Tipo = 'otro' AND r.tipo_recinto IN ('feria', 'auditorio', 'pabellon'))
-  )
-
--- Evita llenar demasiado: ajusta este número
-WHERE n.n <= 2000
-
--- Escoge un recinto compatible, pero no todos
-AND r.id = (
+  ON r.id = (
     SELECT r2.id
     FROM recintos_demo r2
     WHERE
            (e.Tipo = 'deportivo' AND r2.tipo_recinto IN ('estadio', 'pabellon'))
-        OR (e.Tipo = 'musical' AND r2.tipo_recinto IN ('estadio', 'pabellon', 'auditorio', 'feria'))
-        OR (e.Tipo = 'teatral' AND r2.tipo_recinto = 'teatro')
-        OR (e.Tipo = 'cultural' AND r2.tipo_recinto IN ('teatro', 'auditorio', 'feria'))
-        OR (e.Tipo = 'otro' AND r2.tipo_recinto IN ('feria', 'auditorio', 'pabellon'))
+        OR (e.Tipo = 'musical'   AND r2.tipo_recinto IN ('estadio', 'pabellon', 'auditorio', 'feria'))
+        OR (e.Tipo = 'teatral'   AND r2.tipo_recinto = 'teatro')
+        OR (e.Tipo = 'cultural'  AND r2.tipo_recinto IN ('teatro', 'auditorio', 'feria'))
+        OR (e.Tipo = 'cine'      AND r2.tipo_recinto = 'cine')
+        OR (e.Tipo = 'otro'      AND r2.tipo_recinto IN ('feria', 'auditorio', 'pabellon'))
     ORDER BY RAND()
     LIMIT 1
-);
+  )
+WHERE n.n <= 2000;

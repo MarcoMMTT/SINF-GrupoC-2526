@@ -4,6 +4,7 @@ INSERT IGNORE INTO Oferta(Precio, Recinto, Fecha, Nombre_grada, Tipo)
 SELECT
     GREATEST(
         CASE
+            WHEN g.Nombre_Grada LIKE 'Fila %' THEN 9
             WHEN g.Nombre_Grada LIKE '%VIP%' THEN 120
             WHEN g.Nombre_Grada LIKE '%Palco%' THEN 100
             WHEN g.Nombre_Grada LIKE '%Tribuna%' THEN 85
@@ -18,16 +19,19 @@ SELECT
             ELSE 35
         END
         +
-        CASE u.Tipo
+        CASE Tipo
             WHEN 'Adulto' THEN 0
-            WHEN 'Jubilado' THEN -15
-            WHEN 'Infantil' THEN -20
-            WHEN 'Parado' THEN -25
-            WHEN 'Bebé' THEN -30
+            WHEN 'Jubilado' THEN -2
+            WHEN 'Infantil' THEN -3
+            WHEN 'Parado' THEN -4
+            WHEN 'Bebé' THEN -5
         END
         +
-        (DAY(g.Fecha) % 10),
-        5
+        CASE
+            WHEN g.Nombre_Grada LIKE 'Fila %' THEN 0
+            ELSE (DAY(g.Fecha) % 10)
+        END,
+        3
     ) AS Precio,
     g.Recinto,
     g.Fecha,
