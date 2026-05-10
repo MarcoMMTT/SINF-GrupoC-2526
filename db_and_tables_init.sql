@@ -44,7 +44,9 @@ CREATE TABLE Aforo (-- OK
     Huecos INT PRIMARY KEY, 
     Nombre_grada VARCHAR(100) NOT NULL,
 
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada),
+    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
     CHECK (Huecos > 0)
 );
 
@@ -55,7 +57,9 @@ CREATE TABLE Evento ( -- OK
     Estado VARCHAR(20) NOT NULL,
 
     PRIMARY KEY (Recinto, Fecha),
-    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo),
+    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
     CHECK (Estado IN ('finalizado', 'abierto', 'cerrado'))
 );
 
@@ -67,13 +71,19 @@ CREATE TABLE Oferta (
     Tipo  VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (Recinto, Fecha, Nombre_Grada, Tipo),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada),
-    FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo),
+    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
+    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo)
+        ON UPDATE CASCADE 
+        ON DELETE RESTRICT,
     CHECK (Precio > 0)
 );
 
-CREATE TABLE Entrada ( -- OK
+CREATE TABLE Entrada ( 
     Fecha TIMESTAMP NOT NULL,
     Recinto VARCHAR(50) NOT NULL,
     Nombre_grada VARCHAR(100) NOT NULL,
@@ -81,8 +91,12 @@ CREATE TABLE Entrada ( -- OK
     Estado VARCHAR(50),
     
     PRIMARY KEY (Fecha, Recinto, Nombre_grada, Localidad),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada),
+    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
+    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
     CHECK (Estado IN ('libre', 'reservado', 'deteriorado')) -- deteriorado: ya pasó el evento.
 );
 
@@ -96,12 +110,21 @@ CREATE TABLE Vendida (
     Localidad VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Nombre_Grada, Tipo, Fecha, Recinto, Nombre_espectaculo, DNI, Localidad),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada),
-    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo),
-    FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo),
-    FOREIGN KEY (DNI) REFERENCES Cliente(DNI),
-    FOREIGN KEY (Fecha, Recinto, Nombre_grada, Localidad) REFERENCES Entrada(Fecha, Recinto, Nombre_grada, Localidad),
+    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo)
+        ON UPDATE CASCADE 
+        ON DELETE RESTRICT,
+    FOREIGN KEY (DNI) REFERENCES Cliente(DNI)
+        ON UPDATE CASCADE 
+        ON DELETE RESTRICT,
+    FOREIGN KEY (Fecha, Recinto, Nombre_grada, Localidad) REFERENCES Entrada(Fecha, Recinto, Nombre_grada, Localidad)
+        ON UPDATE CASCADE 
+        ON DELETE RESTRICT,
     UNIQUE (Fecha, Recinto, Nombre_grada, Localidad)
 );
  
@@ -112,6 +135,10 @@ CREATE TABLE Esta (
     Nombre_grada VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Nombre_grada,Recinto, Fecha),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha),
+    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
     FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE
 );
