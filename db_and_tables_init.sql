@@ -34,7 +34,16 @@ CREATE TABLE Cliente ( -- OK
 );
 
 
-
+CREATE TABLE Grada ( -- OK
+    Nombre_Grada VARCHAR(100),
+    Fecha TIMESTAMP NOT NULL,
+    Recinto VARCHAR(100) NOT NULL,
+    PRIMARY KEY(Nombre_Grada, Fecha, Recinto),
+    FOREIGN KEY (Fecha, Recinto)
+        REFERENCES Evento(Fecha, Recinto)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
 CREATE TABLE Evento ( -- OK
     Nombre_espectaculo VARCHAR(50) NOT NULL,
     Recinto VARCHAR(100) NOT NULL,
@@ -46,16 +55,6 @@ CREATE TABLE Evento ( -- OK
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
     CHECK (Estado IN ('finalizado', 'abierto', 'cerrado'))
-);
-CREATE TABLE Grada ( -- OK
-    Nombre_Grada VARCHAR(100),
-    Fecha TIMESTAMP NOT NULL,
-    Recinto VARCHAR(100) NOT NULL,
-    PRIMARY KEY(Nombre_Grada, Fecha, Recinto),
-    FOREIGN KEY (Fecha, Recinto)
-        REFERENCES Evento(Fecha, Recinto)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
 );
 
 CREATE TABLE Oferta (
