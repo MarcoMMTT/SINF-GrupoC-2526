@@ -1,5 +1,14 @@
 USE GrupoC;
 
+CREATE INDEX idx_entrada_estado
+ON Entrada(Estado);
+
+CREATE INDEX idx_entrada_estado_pk
+ON Entrada(Estado, Fecha, Recinto, Nombre_grada, Localidad);
+
+CREATE INDEX idx_vendida_entrada
+ON Vendida(Fecha, Recinto, Nombre_grada, Localidad);
+
 INSERT IGNORE INTO Vendida(
     Nombre_grada,
     Tipo,
@@ -9,28 +18,28 @@ INSERT IGNORE INTO Vendida(
     Localidad
 )
 SELECT
-    e.Nombre_grada,
+    x.Nombre_grada,
     CASE
-        WHEN rn % 5 = 0 THEN 'Jubilado'
-        WHEN rn % 5 = 1 THEN 'Adulto'
-        WHEN rn % 5 = 2 THEN 'Infantil'
-        WHEN rn % 5 = 3 THEN 'Parado'
+        WHEN x.r_tipo < 60 THEN 'Adulto'
+        WHEN x.r_tipo < 80 THEN 'Infantil'
+        WHEN x.r_tipo < 92 THEN 'Jubilado'
+        WHEN x.r_tipo < 99 THEN 'Parado'
         ELSE 'Bebé'
     END AS Tipo,
-    e.Fecha,
-    e.Recinto,
-    CONCAT('DNI', LPAD(((rn - 1) % 5000) + 1, 8, '0')),
-    e.Localidad
+    x.Fecha,
+    x.Recinto,
+    CONCAT('DNI', LPAD(x.cliente_id, 8, '0')),
+    x.Localidad
 FROM (
     SELECT
         e.*,
-        ROW_NUMBER() OVER (
-            ORDER BY e.Fecha, e.Recinto, e.Nombre_grada, e.Localidad
-        ) AS rn
+        FLOOR(RAND() * 100) AS r_tipo,
+        FLOOR(1 + RAND() * 5000) AS cliente_id
     FROM Entrada e
     WHERE e.Estado = 'libre'
-) e
-LIMIT 100000;
+    ORDER BY e.Fecha, e.Recinto, e.Nombre_grada, e.Localidad
+    LIMIT 100000
+) x;
 
 UPDATE Entrada e
 JOIN Vendida v
@@ -38,4 +47,5 @@ JOIN Vendida v
  AND v.Recinto = e.Recinto
  AND v.Nombre_grada = e.Nombre_grada
  AND v.Localidad = e.Localidad
-SET e.Estado = 'reservado';
+SET e.Estado = 'reservado'
+WHERE e.Estado = 'libre';

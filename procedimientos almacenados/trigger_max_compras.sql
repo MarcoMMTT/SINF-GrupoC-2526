@@ -1,3 +1,4 @@
+USE GrupoC;
 DELIMITER //
 
 CREATE TRIGGER check_limite_compras
