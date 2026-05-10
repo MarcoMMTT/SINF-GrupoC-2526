@@ -11,13 +11,11 @@ USE GrupoC;
 DROP TABLE IF EXISTS Vendida;
 DROP TABLE IF EXISTS Oferta;
 DROP TABLE IF EXISTS Entrada;
-DROP TABLE IF EXISTS Aforo;
 DROP TABLE IF EXISTS Grada;
 DROP TABLE IF EXISTS Evento;
 DROP TABLE IF EXISTS Espectaculo;
 DROP TABLE IF EXISTS Usuario;
 DROP TABLE IF EXISTS Cliente;
-DROP TABLE IF EXISTS Esta;
 
 CREATE TABLE Espectaculo ( -- OK
     Nombre_espectaculo VARCHAR(50) PRIMARY KEY,
@@ -32,23 +30,10 @@ CREATE TABLE Usuario ( -- OK
 
 CREATE TABLE Cliente ( -- OK
     DNI VARCHAR(20) PRIMARY KEY,
-    numero_cuenta VARCHAR(50)
+    numero_cuenta VARCHAR(50) UNIQUE
 );
 
-CREATE TABLE Grada ( -- OK
-    Nombre_Grada VARCHAR(100) PRIMARY KEY
-);
 
--- Creación de tablas con dependencias (Claves Foráneas)
-CREATE TABLE Aforo (-- OK
-    Huecos INT PRIMARY KEY, 
-    Nombre_grada VARCHAR(100) NOT NULL,
-
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
-        ON UPDATE CASCADE 
-        ON DELETE CASCADE,
-    CHECK (Huecos > 0)
-);
 
 CREATE TABLE Evento ( -- OK
     Nombre_espectaculo VARCHAR(50) NOT NULL,
@@ -62,6 +47,16 @@ CREATE TABLE Evento ( -- OK
         ON DELETE CASCADE,
     CHECK (Estado IN ('finalizado', 'abierto', 'cerrado'))
 );
+CREATE TABLE Grada ( -- OK
+    Nombre_Grada VARCHAR(100),
+    Fecha TIMESTAMP NOT NULL,
+    Recinto VARCHAR(100) NOT NULL,
+    PRIMARY KEY(Nombre_Grada, Fecha, Recinto),
+    FOREIGN KEY (Fecha, Recinto)
+        REFERENCES Evento(Fecha, Recinto)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
 
 CREATE TABLE Oferta (
     Precio INTEGER NOT NULL,
@@ -74,7 +69,7 @@ CREATE TABLE Oferta (
     FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
+    FOREIGN KEY (Nombre_grada, Fecha, Recinto) REFERENCES Grada(Nombre_Grada, Fecha, Recinto)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo)
@@ -85,7 +80,7 @@ CREATE TABLE Oferta (
 
 CREATE TABLE Entrada ( 
     Fecha TIMESTAMP NOT NULL,
-    Recinto VARCHAR(50) NOT NULL,
+    Recinto VARCHAR(100) NOT NULL,
     Nombre_grada VARCHAR(100) NOT NULL,
     Localidad VARCHAR(100) NOT NULL,
     Estado VARCHAR(50),
@@ -94,7 +89,7 @@ CREATE TABLE Entrada (
     FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
+    FOREIGN KEY (Nombre_grada, Recinto, Fecha) REFERENCES Grada(Nombre_Grada, Recinto, Fecha)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
     CHECK (Estado IN ('libre', 'reservado', 'deteriorado')) -- deteriorado: ya pasó el evento.
@@ -105,16 +100,13 @@ CREATE TABLE Vendida (
     Tipo VARCHAR(50) NOT NULL,
     Fecha TIMESTAMP NOT NULL,
     Recinto VARCHAR(100) NOT NULL,
-    Nombre_espectaculo VARCHAR(50) NOT NULL,
     DNI VARCHAR(20) NOT NULL,
     Localidad VARCHAR(100) NOT NULL,
 
-    PRIMARY KEY (Nombre_Grada, Tipo, Fecha, Recinto, Nombre_espectaculo, DNI, Localidad),
+    PRIMARY KEY (Nombre_Grada, Tipo, Fecha, Recinto, DNI, Localidad),
     FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
         ON UPDATE CASCADE,
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
-        ON UPDATE CASCADE,
-    FOREIGN KEY (Nombre_espectaculo) REFERENCES Espectaculo(Nombre_espectaculo)
+    FOREIGN KEY (Nombre_grada, Fecha, Recinto) REFERENCES Grada(Nombre_Grada, Fecha, Recinto)
         ON UPDATE CASCADE,
     FOREIGN KEY (Tipo) REFERENCES Usuario(Tipo)
         ON UPDATE CASCADE 
@@ -128,17 +120,3 @@ CREATE TABLE Vendida (
     UNIQUE (Fecha, Recinto, Nombre_grada, Localidad)
 );
  
-
-CREATE TABLE Esta (
-    Fecha TIMESTAMP NOT NULL,
-    Recinto VARCHAR(100) NOT NULL,
-    Nombre_grada VARCHAR(100) NOT NULL,
-
-    PRIMARY KEY (Nombre_grada,Recinto, Fecha),
-    FOREIGN KEY (Recinto, Fecha) REFERENCES Evento(Recinto, Fecha)
-        ON UPDATE CASCADE 
-        ON DELETE CASCADE,
-    FOREIGN KEY (Nombre_grada) REFERENCES Grada(Nombre_Grada)
-        ON UPDATE CASCADE 
-        ON DELETE CASCADE
-);
