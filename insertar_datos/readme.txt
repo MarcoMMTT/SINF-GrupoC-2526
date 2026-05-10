@@ -14,7 +14,7 @@ TAL Y COMO ESTÁ AHORA GENERA
 5000 clientes
 
 ================================================
-ORDEN PARA EJECUTAR
+### ORDEN PARA EJECUTAR: `insertar_todo.sql`
 ================================================
 1. numeros_aux.sql
 2. insertar_usuarios.sql
