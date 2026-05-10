@@ -1,3 +1,4 @@
+USE GrupoC;
 DELIMITER //
 
 CREATE PROCEDURE SP_Registrar_Cliente(
