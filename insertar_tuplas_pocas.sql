@@ -43,8 +43,8 @@ BEGIN
     ('2024-08-20 19:30:00', 'Teatro García Barbón', 'Anfiteatro', 'Fila1-05', 'libre');
 
     -- 6. Registro de Ventas
-    INSERT INTO Vendida (Nombre_grada, Tipo, Fecha, Recinto, DNI, Localidad) VALUES 
-    ('Pista Principal', 'Adulto', '2024-07-15 21:00:00', 'Estadio Balaídos', '12345678A', 'A-01'),
+    INSERT INTO Vendida (Nombre_grada, Tipo, Fecha, Recinto, DNI, Localidad) VALUES ('Pista Principal', 'Adulto', '2024-07-15 21:00:00', 'Estadio Balaídos', '12345678A', 'A-01'),
+    ('Pista Principal', 'Adulto', '2024-07-15 21:00:00', 'Estadio Balaídos', '87654321B', 'A-01'),
     ('Palco VIP', 'Adulto', '2024-07-15 21:00:00', 'Estadio Balaídos', '87654321B', 'VIP-01');
 
 END //
