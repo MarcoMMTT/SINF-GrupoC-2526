@@ -66,7 +66,7 @@ INSERT INTO recintos_demo(nombre, tipo_recinto) VALUES
 ('Palacio de Congresos de Sevilla', 'feria'),
 ('Palacio de Ferias de Málaga', 'feria'),
 ('ExpoCoruña', 'feria'),
-('Cidade da Cultura', 'feria');
+('Cidade da Cultura', 'feria'),
 
 -- Cines de Vigo
 ('Cine Yelmo Premium Vialia', 'cine'),
