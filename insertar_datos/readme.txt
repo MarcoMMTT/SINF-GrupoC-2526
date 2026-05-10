@@ -18,7 +18,7 @@ ORDEN PARA EJECUTAR
 ================================================
 1. numeros_aux.sql
 2. insertar_usuarios.sql
-3. isertar_espectaculos.sql
+3. insertar_espectaculos.sql
 4. recintos_aux.sql
 5. insertar_gradas_y_aforo.sql
 6. clientes.sql
