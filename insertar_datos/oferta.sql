@@ -1,21 +1,23 @@
+USE GrupoC;
+
 INSERT IGNORE INTO Oferta(Precio, Recinto, Fecha, Nombre_grada, Tipo)
 SELECT
     CASE u.Tipo
-        WHEN 'Adulto' THEN 50 + (g.Huecos % 30)
-        WHEN 'Jubilado' THEN 30 + (g.Huecos % 20)
-        WHEN 'Infantil' THEN 25 + (g.Huecos % 15)
-        WHEN 'Parado' THEN 20 + (g.Huecos % 15)
+        WHEN 'Adulto' THEN 40 + gnum.n * 5 + (DAY(g.Fecha) % 20) + (CHAR_LENGTH(g.Recinto) % 15)
+        WHEN 'Jubilado' THEN 30 + gnum.n * 3
+        WHEN 'Infantil' THEN 25 + gnum.n * 2
+        WHEN 'Parado' THEN 20 + gnum.n * 2
         WHEN 'Bebé' THEN 5
     END AS Precio,
-    es.Recinto,
-    es.Fecha,
-    es.Nombre_grada,
+    g.Recinto,
+    g.Fecha,
+    g.Nombre_Grada,
     u.Tipo
-FROM Esta es
-JOIN Aforo g
-  ON g.Nombre_grada = es.Nombre_grada
-CROSS JOIN Usuario u;
-
+FROM Grada g
+JOIN numeros gnum
+  ON g.Nombre_Grada = CONCAT('Grada ', gnum.n)
+CROSS JOIN Usuario u
+WHERE gnum.n <= 5;
 -- =========================
 -- OFERTA / PRECIOS
 -- Precio por evento, grada y tipo de usuario

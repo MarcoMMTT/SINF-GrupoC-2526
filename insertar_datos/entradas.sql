@@ -2,15 +2,15 @@ USE GrupoC;
 
 INSERT IGNORE INTO Entrada(Fecha, Recinto, Nombre_grada, Localidad, Estado)
 SELECT
-    es.Fecha,
-    es.Recinto,
-    es.Nombre_grada,
+    g.Fecha,
+    g.Recinto,
+    g.Nombre_Grada,
     CONCAT('L', LPAD(n.n, 4, '0')),
     CASE
         WHEN n.n % 97 = 0 THEN 'deteriorado'
         ELSE 'libre'
     END
-FROM Esta es
+FROM Grada g
 JOIN numeros n
 WHERE n.n <= 100;
 
