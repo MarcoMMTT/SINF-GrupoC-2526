@@ -17,3 +17,14 @@ SOURCE ventas.sql;
 -- =========================================
 -- FIN DE CARGA
 -- =========================================
+
+-- =======================
+-- VER LO QUE SE HA CREADO
+-- =======================
+SELECT COUNT(*) AS espectaculos FROM Espectaculo;
+SELECT COUNT(*) AS eventos FROM Evento;
+SELECT COUNT(*) AS gradas FROM Grada;
+SELECT COUNT(*) AS ofertas FROM Oferta;
+SELECT COUNT(*) AS entradas FROM Entrada;
+SELECT COUNT(*) AS ventas FROM Vendida;
+SELECT COUNT(*) AS clientes FROM Cliente;

@@ -1,14 +1,5 @@
 USE GrupoC;
 
--- =========================
--- VENTAS
--- Inserta 20000 ventas simuladas
--- El UNIQUE evita vender dos veces la misma entrada
--- =========================
-
--- ventas.sql
--- Vendida depende de Entrada, Cliente, Usuario y Grada
-
 INSERT IGNORE INTO Vendida(
     Nombre_grada,
     Tipo,
@@ -20,20 +11,26 @@ INSERT IGNORE INTO Vendida(
 SELECT
     e.Nombre_grada,
     CASE
-        WHEN n.n % 5 = 0 THEN 'Jubilado'
-        WHEN n.n % 5 = 1 THEN 'Adulto'
-        WHEN n.n % 5 = 2 THEN 'Infantil'
-        WHEN n.n % 5 = 3 THEN 'Parado'
+        WHEN rn % 5 = 0 THEN 'Jubilado'
+        WHEN rn % 5 = 1 THEN 'Adulto'
+        WHEN rn % 5 = 2 THEN 'Infantil'
+        WHEN rn % 5 = 3 THEN 'Parado'
         ELSE 'Bebé'
-    END,
+    END AS Tipo,
     e.Fecha,
     e.Recinto,
-    CONCAT('DNI', LPAD(((n.n - 1) % 5000) + 1, 8, '0')),
+    CONCAT('DNI', LPAD(((rn - 1) % 5000) + 1, 8, '0')),
     e.Localidad
-FROM Entrada e
-JOIN numeros n
-WHERE e.Estado = 'libre'
-LIMIT 20000;
+FROM (
+    SELECT
+        e.*,
+        ROW_NUMBER() OVER (
+            ORDER BY e.Fecha, e.Recinto, e.Nombre_grada, e.Localidad
+        ) AS rn
+    FROM Entrada e
+    WHERE e.Estado = 'libre'
+) e
+LIMIT 100000;
 
 UPDATE Entrada e
 JOIN Vendida v
