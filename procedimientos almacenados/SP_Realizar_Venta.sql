@@ -1,6 +1,6 @@
 DELIMITER //
 
-CREATE PROCEDURE HacerCompra(
+CREATE PROCEDURE Venta(
     IN p_dni VARCHAR(20),
     IN p_recinto VARCHAR(100),
     IN p_fecha TIMESTAMP,
