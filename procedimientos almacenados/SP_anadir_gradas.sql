@@ -4,10 +4,15 @@ CREATE PROCEDURE AnadirGrada(
     IN p_fecha TIMESTAMP,
     IN p_recinto VARCHAR(100),
     IN p_nombre_grada VARCHAR(100),
-    IN p_cantidad_entradas INT
+    IN p_cantidad_entradas INT,
+    IN p_ofertas_json JSON
 )
 BEGIN
     DECLARE v_seq INT;
+    DECLARE v_contador INT DEFAULT 0;
+    DECLARE v_total_ofertas INT;
+    DECLARE v_tipo VARCHAR(50);
+    DECLARE v_precio INT;
     
     START TRANSACTION;
     
@@ -43,8 +48,34 @@ BEGIN
             SET v_seq = v_seq + 1;
         END WHILE;
         
+        -- 6. Creamos las ofertas para la grada si se proporcionan
+        IF p_ofertas_json IS NOT NULL AND JSON_LENGTH(p_ofertas_json) > 0 THEN
+            SET v_total_ofertas = JSON_LENGTH(p_ofertas_json);
+            SET v_contador = 0;
+            
+            WHILE v_contador < v_total_ofertas DO
+                SET v_tipo = JSON_EXTRACT(p_ofertas_json, CONCAT('$[', v_contador, '].tipo'));
+                SET v_precio = JSON_EXTRACT(p_ofertas_json, CONCAT('$[', v_contador, '].precio'));
+                
+                -- Removemos las comillas del tipo si las tiene
+                SET v_tipo = TRIM('"' FROM v_tipo);
+                
+                -- Verificamos que el tipo de usuario existe
+                IF NOT EXISTS (SELECT 1 FROM Usuario WHERE Tipo = v_tipo) THEN
+                    ROLLBACK;
+                    SELECT CONCAT('Error: El tipo de usuario ', v_tipo, ' no existe') AS Resultado;
+                END IF;
+                
+                -- Insertamos la oferta
+                INSERT INTO Oferta (Precio, Recinto, Fecha, Nombre_grada, Tipo)
+                VALUES (v_precio, p_recinto, p_fecha, p_nombre_grada, v_tipo);
+                
+                SET v_contador = v_contador + 1;
+            END WHILE;
+        END IF;
+        
         COMMIT;
-        SELECT CONCAT('Grada "', p_nombre_grada, '" creada exitosamente con ', p_cantidad_entradas, ' entradas') AS Resultado;
+        SELECT CONCAT('Grada "', p_nombre_grada, '" creada exitosamente con ', p_cantidad_entradas, ' entradas y sus ofertas') AS Resultado;
     
     END IF;
     
