@@ -1,3 +1,4 @@
+Use GrupoC;
 DELIMITER //
 
 CREATE PROCEDURE CrearEvento(

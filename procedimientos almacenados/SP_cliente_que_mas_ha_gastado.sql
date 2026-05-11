@@ -11,7 +11,6 @@ BEGIN
 
     SELECT
         c.DNI,
-        c.numero_cuenta,
         COUNT(*) AS Entradas_compradas,
         SUM(o.Precio) AS Total_gastado
     FROM Cliente c
